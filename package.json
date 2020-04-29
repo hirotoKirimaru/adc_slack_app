@@ -5,6 +5,12 @@
   "repository": "https://github.com/hirotoKirimaru/adc_slack_app",
   "author": "nainaistar <nainaistar@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "npm run build && npm run serve",
+    "build": "npx tsc --build tsconfig.json",
+    "serve": "node --require dotenv/config dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "@slack/bolt": "^2.0.1",
     "dotenv": "^8.2.0"
