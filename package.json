@@ -6,8 +6,9 @@
   "author": "nainaistar <nainaistar@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && npm run serve",
-    "build": "npx tsc --build tsconfig.json",
+    "start": "npm run serve",
+    "dev": "npm run build && npm run serve",
+    "build": "npx tsc",
     "serve": "node --require dotenv/config dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
