@@ -1,0 +1,7 @@
+{
+  "watch": [
+    "src"
+  ],
+  "ext": "ts",
+  "exec": "node -r dotenv/config --inspect -r ts-node/register ./src/index.ts"
+}
