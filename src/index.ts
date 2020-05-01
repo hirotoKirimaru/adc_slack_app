@@ -12,4 +12,16 @@ export const app = new App({
   console.log("⚡️ Bolt app is running!");
 })();
 
-require("./message/erai");
+// 動的にboltに対してrequiredしに行くロジック。
+const fs = require("fs");
+const contextRoot = "./src"; // srcのrootPath
+const paths: string[] = ["message"]; // appに対してimportする対象ディレクトリ
+
+paths.forEach((path) => {
+  fs.readdir(contextRoot + "/" + path, function (err: any, files: string[]) {
+    if (err) throw err;
+    files.forEach((file) => {
+      require("./" + path + "/" + file);
+    });
+  });
+});
