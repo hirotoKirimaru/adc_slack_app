@@ -5,20 +5,11 @@ export const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
 });
 
-/* Add functionality here */
-// Listens to incoming messages that contain "hello"
-app.message('hello', async ({ message, say }) => {
-  console.log('こんにちはって言ったよ！')
-  // say() sends a message to the channel where the event was triggered
-  await say(`Hey there <@${message.user}>!`);
-});
-
-
-
-
 (async () => {
   // Start the app
   await app.start(process.env.PORT || 3000);
 
   console.log("⚡️ Bolt app is running!");
 })();
+
+require("./message/erai");
