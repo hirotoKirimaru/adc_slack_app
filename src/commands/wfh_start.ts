@@ -33,21 +33,35 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
           text: "業務開始連絡",
         },
         blocks: [
+          // {
+          //   type: "section",
+          //   block_id: "registerDate",
+          //   text: {
+          //     type: "mrkdwn",
+          //     text: "作業日",
+          //   },
+          //   accessory: {
+          //     type: "datepicker",
+          //     initial_date: now,
+          //     placeholder: {
+          //       type: "plain_text",
+          //       text: "Select a date",
+          //       emoji: true,
+          //     },
+          //   },
+          // },
           {
-            type: "section",
-            block_id: "registerDate",
-            text: {
-              type: "mrkdwn",
+            type: "input",
+            block_id: "workDate",
+            label: {
+              type: "plain_text",
               text: "作業日",
             },
-            accessory: {
-              type: "datepicker",
-              initial_date: now,
-              placeholder: {
-                type: "plain_text",
-                text: "Select a date",
-                emoji: true,
-              },
+            element: {
+              type: "plain_text_input",
+              action_id: "workDate",
+              initial_value : "2020-05-02",
+              // initial_value : dayjs().format("HHMM")
             },
           },
           {
@@ -59,7 +73,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             },
             element: {
               type: "plain_text_input",
-              action_id: "dreamy_input",
+              action_id: "start",
               initial_value : "0900",
               // initial_value : dayjs().format("HHMM")
             },
@@ -73,7 +87,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             },
             element: {
               type: "plain_text_input",
-              action_id: "dreamy_input",
+              action_id: "end",
               initial_value: "1800"
             },
           },
@@ -86,7 +100,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             },
             element: {
               type: "plain_text_input",
-              action_id: "dreamy_input",
+              action_id: "action",
               multiline: true,
             },
           },
