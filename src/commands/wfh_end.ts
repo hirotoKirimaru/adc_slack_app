@@ -1,24 +1,30 @@
 import { app } from "../initializers/bolt";
 import dayjs from "dayjs";
 import { CallbackId, Command } from "../types/constants";
+import { firestore } from "../initializers/firebase";
 
 app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
   await ack();
 
-  async function createBlocks() {
-    return;
+  const dailyReportsRef = firestore.collection("dailyReports");
+  const dailyReportsQuery = dailyReportsRef
+      .where("user", "==", body.user_id)
+      .where("status", "==", "open");
+
+  const dailyReports = await dailyReportsQuery.get().catch((err) => {
+    throw Error(err);
+  });
+
+  if (dailyReports.docs.length === 0) {
+    throw Error("作業記録なし。");
   }
 
-  try {
-    const date = new Date();
-    const now =
-      date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-    //
-    // ;
-    // const blocks = await createBlocks();
-    // const now = dayjs().format("YYYY-MM-DD");
+  const dailyReport = dailyReports.docs[0];
+  const dailyReportData = dailyReport.data();
 
+
+  try {
     await app.client.views.open({
       token: context.botToken,
       // 適切な trigger_id を受け取ってから 3 秒以内に渡す
@@ -33,23 +39,6 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
           text: "業務終了連絡",
         },
         blocks: [
-          // {
-          //   type: "section",
-          //   block_id: "registerDate",
-          //   text: {
-          //     type: "mrkdwn",
-          //     text: "作業日",
-          //   },
-          //   accessory: {
-          //     type: "datepicker",
-          //     initial_date: now,
-          //     placeholder: {
-          //       type: "plain_text",
-          //       text: "Select a date",
-          //       emoji: true,
-          //     },
-          //   },
-          // },
           {
             type: "input",
             block_id: "workDate",
@@ -60,7 +49,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "workDate",
-              initial_value : "2020-05-02",
+              initial_value: "2020-05-02",
               // initial_value : dayjs().format("HHMM")
             },
           },
@@ -74,8 +63,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "start",
-              initial_value : "0900",
-              // initial_value : dayjs().format("HHMM")
+              initial_value: dailyReportData.start,
             },
           },
           {
@@ -88,7 +76,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "end",
-              initial_value: "1800"
+              initial_value: dailyReportData.end,
             },
           },
           {
@@ -101,6 +89,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "action",
+              initial_value: dailyReportData.action,
               multiline: true,
             },
           },

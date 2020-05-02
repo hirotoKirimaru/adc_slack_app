@@ -6,10 +6,6 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
   await ack();
 
-  async function createBlocks() {
-    return;
-  }
-
   try {
     const date = new Date();
     const now =

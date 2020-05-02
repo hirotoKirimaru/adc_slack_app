@@ -25,7 +25,7 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
       workDate: workDate,
       start: start,
       end: end,
-      status: "started",
+      status: "close",
       text: action,
       registerDate: "",
       updateDate: "",
