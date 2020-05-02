@@ -1,4 +1,4 @@
-import { app } from "../index";
+import { app } from "../initializers/bolt";
 
 // モーダルビューでのデータ送信イベントを処理します
 app.view("view_1", async ({ ack, body, payload, context }) => {

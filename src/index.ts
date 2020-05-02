@@ -1,11 +1,4 @@
-import { App, LogLevel } from "@slack/bolt";
-
-export const app = new App({
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  token: process.env.SLACK_BOT_TOKEN,
-  logLevel:
-    process.env.NODE_ENV === "production" ? LogLevel.INFO : LogLevel.DEBUG,
-});
+import { app } from "./initializers/bolt";
 
 (async () => {
   // Start the app

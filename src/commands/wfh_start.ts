@@ -1,4 +1,4 @@
-import { app } from "../index";
+import { app } from "../initializers/bolt";
 
 app.command("/wfh_start", async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
@@ -55,7 +55,6 @@ app.command("/wfh_start", async ({ context, body, ack, payload }) => {
         },
       },
     });
-    console.log(result);
   } catch (error) {
     console.error(error);
   }
