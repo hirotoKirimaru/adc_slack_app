@@ -1,5 +1,4 @@
 import { app } from "../initializers/bolt";
-import dayjs from "dayjs";
 import { CallbackId, Command } from "../types/constants";
 import { firestore } from "../initializers/firebase";
 
@@ -84,12 +83,26 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
             block_id: "action",
             label: {
               type: "plain_text",
-              text: "業務内容(実績)",
+              text: "【完了済】業務内容(実績)",
             },
             element: {
               type: "plain_text_input",
               action_id: "action",
               initial_value: dailyReportData.action,
+              multiline: true,
+            },
+          },
+          {
+            type: "input",
+            block_id: "workingAction",
+            label: {
+              type: "plain_text",
+              text: "【作業中及び未着手】業務内容(実績)",
+            },
+            element: {
+              type: "plain_text_input",
+              action_id: "workingAction",
+              initial_value: "",
               multiline: true,
             },
           },

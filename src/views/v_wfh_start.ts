@@ -1,5 +1,5 @@
 import { app } from "../initializers/bolt";
-import { firestore } from "../initializers/firebase";
+import { FieldValue, firestore } from "../initializers/firebase";
 import { CallbackId } from "../types/constants";
 import dayjs from "dayjs";
 
@@ -17,6 +17,7 @@ app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
     const start = payload.start.start.value;
     const end = payload.end.end.value;
     const action = payload.action.action.value;
+    const timestamp = await FieldValue.serverTimestamp();
 
     const user = body["user"]["id"];
 
@@ -27,8 +28,8 @@ app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
       end: end,
       status: "open",
       action: action,
-      registerDate: "",
-      updateDate: "",
+      registerDate: timestamp,
+      updateDate: timestamp,
     };
 
     await dailyReportsRef.add(report).catch((err: any) => {

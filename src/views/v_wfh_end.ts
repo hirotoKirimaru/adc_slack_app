@@ -1,7 +1,6 @@
 import { app } from "../initializers/bolt";
-import { firestore } from "../initializers/firebase";
+import { FieldValue, firestore } from "../initializers/firebase";
 import { CallbackId } from "../types/constants";
-import dayjs from "dayjs";
 
 // モーダルビューでのデータ送信イベントを処理します
 app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
@@ -21,11 +20,15 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
     const start = payload.start.start.value;
     const end = payload.end.end.value;
     const action = payload.action.action.value;
+    const workingAction = payload.workingAction.workingAction.value;
+    const timestamp = await FieldValue.serverTimestamp();
 
     const report = {
       end: end,
       status: "close",
-      text: action,
+      action: action,
+      workingAction: workingAction,
+      updateDate: timestamp,
     };
 
     const dailyReports = await dailyReportsQuery.get();
@@ -44,7 +47,10 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
 ・開始時刻(実績)：${start}
 ・終了時刻(実績)：${end}
 ・業務内容(実績)
-${action}`;
+【完了済】
+${action}
+【作業中及び未着手】
+${workingAction}`;
 
     await app.client.chat.postEphemeral({
       token: context.botToken,
