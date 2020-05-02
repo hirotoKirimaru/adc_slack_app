@@ -8,28 +8,39 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
   await ack();
 
   try {
+    const now = new Date();
+
     const dailyReportsRef = firestore.collection("dailyReports");
+    // 前日に残した作業をそのまま記載したいが、金曜日だと営業日がわからないので、無理やりorderByで取得する。
     const dailyReportsQuery = dailyReportsRef
       .where("user", "==", body.user_id)
-      .where("status", "==", "open");
+      .orderBy("workDate", "desc")
+      .limit(1);
 
     const dailyReports = await dailyReportsQuery.get().catch((err) => {
       throw new Error(err);
     });
-    if (dailyReports.docs.length > 0) {
-      const msg = {
-        token: context.botToken,
-        text:
-          "既に業務開始しています。または、業務終了していないかもしれません。",
-        channel: payload.channel_id,
-        user: payload.user_id,
-      };
-      await app.client.chat.postEphemeral(msg as any);
-      return;
+
+    const workDate = dayjs(now).format("YYYY/MM/DD");
+
+    let workingAction = "";
+    // 初回登録
+    if (!dailyReports.empty) {
+      const doc = dailyReports.docs[0];
+      const data = doc.data();
+      if (data.workDate === workDate) {
+        const msg = {
+          token: context.botToken,
+          text: "既に本日は業務開始しています。",
+          channel: payload.channel_id,
+          user: payload.user_id,
+        };
+        await app.client.chat.postEphemeral(msg as any);
+        return;
+      }
+      workingAction = data.workingAction;
     }
 
-    const now = new Date();
-    const workDate = dayjs(now).format("YYYY/MM/DD");
     const start = dayjs(now).format("HHmm");
     const end = dayjs(now).add(8, "hour").format("HHmm");
 
@@ -90,6 +101,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "action",
+              initial_value: workingAction,
               multiline: true,
             },
           },

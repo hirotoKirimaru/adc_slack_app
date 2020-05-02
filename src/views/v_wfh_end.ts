@@ -19,8 +19,14 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
     const payload = (view.state as any).values;
     const start = payload.start.start.value;
     const end = payload.end.end.value;
-    const action = payload.action.action.value;
-    const workingAction = payload.workingAction.workingAction.value;
+    const action =
+      payload.action.action.value !== undefined
+        ? payload.action.action.value
+        : "";
+    const workingAction =
+      payload.workingAction.workingAction.value !== undefined
+        ? payload.workingAction.workingAction.value
+        : "";
     const timestamp = await FieldValue.serverTimestamp();
 
     const report = {

@@ -81,6 +81,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
           {
             type: "input",
             block_id: "action",
+            optional: true,
             label: {
               type: "plain_text",
               text: "【完了済】業務内容(実績)",
@@ -95,6 +96,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
           {
             type: "input",
             block_id: "workingAction",
+            optional: true,
             label: {
               type: "plain_text",
               text: "【作業中及び未着手】業務内容(実績)",
