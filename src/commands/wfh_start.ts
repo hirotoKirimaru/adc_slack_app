@@ -30,6 +30,8 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
 
     const now = new Date();
     const workDate = dayjs(now).format("YYYY/MM/DD");
+    const start = dayjs(now).format("HHmm");
+    const end = dayjs(now).add(8, "hour").format("HHmm");
 
     await app.client.views.open({
       token: context.botToken,
@@ -62,8 +64,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "start",
-              initial_value: "0900",
-              // initial_value : dayjs().format("HHMM")
+              initial_value: start,
             },
           },
           {
@@ -76,7 +77,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "end",
-              initial_value: "1800",
+              initial_value: end,
             },
           },
           {
@@ -100,6 +101,13 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    const msg = {
+      token: context.botToken,
+      text: error,
+      channel: payload.channel_id,
+      user: payload.user_id,
+    };
+    await app.client.chat.postEphemeral(msg as any);
   }
 });

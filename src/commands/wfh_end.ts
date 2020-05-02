@@ -47,17 +47,10 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
         },
         blocks: [
           {
-            type: "input",
-            block_id: "workDate",
-            label: {
-              type: "plain_text",
-              text: "作業日",
-            },
-            element: {
-              type: "plain_text_input",
-              action_id: "workDate",
-              initial_value: "2020-05-02",
-              // initial_value : dayjs().format("HHMM")
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `作業日付：${dailyReportData.workDate}`,
             },
           },
           {

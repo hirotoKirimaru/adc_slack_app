@@ -18,7 +18,6 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
     const batch = firestore.batch();
 
     const payload = (view.state as any).values;
-    const workDate = payload.workDate.workDate.value;
     const start = payload.start.start.value;
     const end = payload.end.end.value;
     const action = payload.action.action.value;
@@ -31,7 +30,9 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
 
     const dailyReports = await dailyReportsQuery.get();
 
+    let workDate = "";
     dailyReports.docs.forEach((dailyReport) => {
+      workDate = dailyReport.data().workDate;
       batch.update(dailyReport.ref, report);
     });
 
