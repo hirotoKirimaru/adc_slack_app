@@ -1,8 +1,9 @@
 import { app } from "../initializers/bolt";
 import { FieldValue, firestore } from "../initializers/firebase";
+import { CallbackId } from "../types/constants";
 
 // モーダルビューでのデータ送信イベントを処理します
-app.view("view_1", async ({ ack, body, payload, context }) => {
+app.view(CallbackId.WfhStart, async ({ ack, body, payload, context }) => {
   // モーダルビューでのデータ送信イベントを確認
   await ack();
 

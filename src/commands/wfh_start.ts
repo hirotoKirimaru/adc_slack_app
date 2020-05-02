@@ -1,11 +1,25 @@
 import { app } from "../initializers/bolt";
+import dayjs from "dayjs";
+import { CallbackId, Command } from "../types/constants";
 
-app.command("/wfh_start", async ({ context, body, ack, payload }) => {
+app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
   await ack();
 
+  async function createBlocks() {
+    return;
+  }
+
   try {
-    const result = await app.client.views.open({
+    const date = new Date();
+    const now =
+      date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+    //
+    // ;
+    // const blocks = await createBlocks();
+    // const now = dayjs().format("YYYY-MM-DD");
+
+    await app.client.views.open({
       token: context.botToken,
       // 適切な trigger_id を受け取ってから 3 秒以内に渡す
       trigger_id: body.trigger_id,
@@ -13,34 +27,62 @@ app.command("/wfh_start", async ({ context, body, ack, payload }) => {
       view: {
         type: "modal",
         private_metadata: payload.channel_id,
-        // callback_id が view を特定するための識別子
-        callback_id: "view_1",
+        callback_id: CallbackId.WfhStart,
         title: {
           type: "plain_text",
-          text: "Modal title",
+          text: "業務開始連絡",
         },
         blocks: [
           {
             type: "section",
+            block_id: "registerDate",
             text: {
               type: "mrkdwn",
-              text: "Welcome to a modal with _blocks_",
+              text: "作業日",
             },
             accessory: {
-              type: "button",
-              text: {
+              type: "datepicker",
+              initial_date: now,
+              placeholder: {
                 type: "plain_text",
-                text: "Click me!",
+                text: "Select a date",
+                emoji: true,
               },
-              action_id: "button_abc",
             },
           },
           {
             type: "input",
-            block_id: "input_c",
+            block_id: "start",
             label: {
               type: "plain_text",
-              text: "What are your hopes and dreams?",
+              text: "開始時刻(実績)",
+            },
+            element: {
+              type: "plain_text_input",
+              action_id: "dreamy_input",
+              initial_value : "0900",
+              // initial_value : dayjs().format("HHMM")
+            },
+          },
+          {
+            type: "input",
+            block_id: "end",
+            label: {
+              type: "plain_text",
+              text: "終了時刻(予定)",
+            },
+            element: {
+              type: "plain_text_input",
+              action_id: "dreamy_input",
+              initial_value: "1800"
+            },
+          },
+          {
+            type: "input",
+            block_id: "action",
+            label: {
+              type: "plain_text",
+              text: "業務内容(予定)",
             },
             element: {
               type: "plain_text_input",
