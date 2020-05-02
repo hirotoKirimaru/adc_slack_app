@@ -9,20 +9,27 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
 
   const dailyReportsRef = firestore.collection("dailyReports");
   const dailyReportsQuery = dailyReportsRef
-      .where("user", "==", body.user_id)
-      .where("status", "==", "open");
+    .where("user", "==", body.user_id)
+    .where("status", "==", "open");
 
   const dailyReports = await dailyReportsQuery.get().catch((err) => {
     throw Error(err);
   });
 
   if (dailyReports.docs.length === 0) {
-    throw Error("作業記録なし。");
+    const msg = {
+      token: context.botToken,
+      text:
+        "締め処理をする業務がありません。業務を開始していない可能性があります。",
+      channel: payload.channel_id,
+      user: payload.user_id,
+    };
+    await app.client.chat.postEphemeral(msg as any);
+    return;
   }
 
   const dailyReport = dailyReports.docs[0];
   const dailyReportData = dailyReport.data();
-
 
   try {
     await app.client.views.open({
