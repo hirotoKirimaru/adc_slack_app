@@ -28,13 +28,8 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
       return;
     }
 
-    const date = new Date();
-    const now =
-      date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-    //
-    // ;
-    // const blocks = await createBlocks();
-    // const now = dayjs().format("YYYY-MM-DD");
+    const now = new Date();
+    const workDate = dayjs(now).format("YYYY/MM/DD");
 
     await app.client.views.open({
       token: context.botToken,
@@ -50,35 +45,11 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
           text: "業務開始連絡",
         },
         blocks: [
-          // {
-          //   type: "section",
-          //   block_id: "registerDate",
-          //   text: {
-          //     type: "mrkdwn",
-          //     text: "作業日",
-          //   },
-          //   accessory: {
-          //     type: "datepicker",
-          //     initial_date: now,
-          //     placeholder: {
-          //       type: "plain_text",
-          //       text: "Select a date",
-          //       emoji: true,
-          //     },
-          //   },
-          // },
           {
-            type: "input",
-            block_id: "workDate",
-            label: {
-              type: "plain_text",
-              text: "作業日",
-            },
-            element: {
-              type: "plain_text_input",
-              action_id: "workDate",
-              initial_value: "2020-05-02",
-              // initial_value : dayjs().format("HHMM")
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `作業日付：${workDate}`,
             },
           },
           {
