@@ -4,7 +4,7 @@ import { CallbackId } from "../types/constants";
 import dayjs from "dayjs";
 
 // モーダルビューでのデータ送信イベントを処理します
-app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
+app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
   // モーダルビューでのデータ送信イベントを確認
   await ack();
 
@@ -37,10 +37,10 @@ app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
 
     // ユーザーにメッセージを送信
     const message = `【${workDate}】
-◆業務開始連絡
+◆業務終了連絡
 ・開始時刻(実績)：${start}
-・終了時刻(予定)：${end}
-・業務内容(予定)
+・終了時刻(実績)：${end}
+・業務内容(実績)
 ${action}`;
 
     await app.client.chat.postEphemeral({
