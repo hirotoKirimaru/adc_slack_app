@@ -9,8 +9,13 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
   await ack();
 
   try {
+    const user = body["user"]["id"];
+
     const dailyReportsRef = firestore.collection("dailyReports");
-    // const batch = firestore.batch();
+    const dailyReportsQuery = dailyReportsRef
+      .where("user", "==", user)
+      .where("status", "==", "open");
+    const batch = firestore.batch();
 
     const payload = (view.state as any).values;
     const workDate = payload.workDate.workDate.value;
@@ -18,22 +23,19 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
     const end = payload.end.end.value;
     const action = payload.action.action.value;
 
-    const user = body["user"]["id"];
-
     const report = {
-      user: user,
-      workDate: workDate,
-      start: start,
       end: end,
       status: "close",
       text: action,
-      registerDate: "",
-      updateDate: "",
     };
 
-    await dailyReportsRef.add(report).catch((err: any) => {
-      throw new Error(err);
+    const dailyReports = await dailyReportsQuery.get();
+
+    dailyReports.docs.forEach((dailyReport) => {
+      batch.update(dailyReport.ref, report);
     });
+
+    await batch.commit();
 
     // ユーザーにメッセージを送信
     const message = `【${workDate}】

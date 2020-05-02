@@ -1,12 +1,33 @@
 import { app } from "../initializers/bolt";
 import dayjs from "dayjs";
 import { CallbackId, Command } from "../types/constants";
+import { firestore } from "../initializers/firebase";
 
 app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
   await ack();
 
   try {
+    const dailyReportsRef = firestore.collection("dailyReports");
+    const dailyReportsQuery = dailyReportsRef
+      .where("user", "==", body.user_id)
+      .where("status", "==", "open");
+
+    const dailyReports = await dailyReportsQuery.get().catch((err) => {
+      throw new Error(err);
+    });
+    if (dailyReports.docs.length > 0) {
+      const msg = {
+        token: context.botToken,
+        text:
+          "既に業務開始しています。または、業務終了していないかもしれません。",
+        channel: payload.channel_id,
+        user: payload.user_id,
+      };
+      await app.client.chat.postEphemeral(msg as any);
+      return;
+    }
+
     const date = new Date();
     const now =
       date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
@@ -56,7 +77,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "workDate",
-              initial_value : "2020-05-02",
+              initial_value: "2020-05-02",
               // initial_value : dayjs().format("HHMM")
             },
           },
@@ -70,7 +91,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "start",
-              initial_value : "0900",
+              initial_value: "0900",
               // initial_value : dayjs().format("HHMM")
             },
           },
@@ -84,7 +105,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "end",
-              initial_value: "1800"
+              initial_value: "1800",
             },
           },
           {
