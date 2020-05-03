@@ -9,7 +9,7 @@
     "start": "npm run serve",
     "dev": "nodemon",
     "build": "npx tsc",
-    "serve": "node --require dotenv/config dist/index.js",
+    "serve": "node --require dotenv/config dist/index.js dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

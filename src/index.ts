@@ -9,7 +9,7 @@ import { app } from "./initializers/bolt";
 
 // 動的にboltに対してrequiredしに行くロジック。
 const fs = require("fs");
-const contextRoot = "./src"; // srcのrootPath
+const contextRoot = "./" + process.argv[2]; // rootPath(検証中はsrc、本番はコンパイル後のdistにしたいので、パラメータで渡すことにする。)
 const paths: string[] = ["commands", "message", "views"]; // appに対してimportする対象ディレクトリ
 
 paths.forEach((path) => {
