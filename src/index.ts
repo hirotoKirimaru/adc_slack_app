@@ -15,8 +15,13 @@ const paths: string[] = ["commands", "message", "views"]; // appに対してimpo
 paths.forEach((path) => {
   fs.readdir(contextRoot + "/" + path, function (err: any, files: string[]) {
     if (err) throw err;
-    files.forEach((file) => {
-      require("./" + path + "/" + file);
-    });
+    files
+      .filter((file) => {
+        // tsのコンパイル後のxx.js.mapを読み込まないようにする。
+        return !file.match(".js.map");
+      })
+      .forEach((file) => {
+        require("./" + path + "/" + file);
+      });
   });
 });
