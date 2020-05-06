@@ -1,15 +1,13 @@
 import { app } from "../initializers/bolt";
-import dayjs from "dayjs";
 import { CallbackId, Command } from "../types/constants";
 import { firestore } from "../initializers/firebase";
+import dayjs from "dayjs";
 
 app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
   await ack();
 
   try {
-    const now = new Date();
-
     const dailyReportsRef = firestore.collection("dailyReports");
     // 前日に残した作業をそのまま記載したいが、金曜日だと営業日がわからないので、無理やりorderByで取得する。
     const dailyReportsQuery = dailyReportsRef
@@ -21,7 +19,9 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
       throw new Error(err);
     });
 
-    const workDate = dayjs(now).format("YYYY/MM/DD");
+    // JTCに変更する
+    const now = dayjs().add(9, "hour");
+    const workDate = now.format("YYYY/MM/DD");
 
     let workingAction = "";
     // 初回登録
@@ -41,8 +41,8 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
       workingAction = data.workingAction;
     }
 
-    const start = dayjs(now).format("HHmm");
-    const end = dayjs(now).add(8, "hour").format("HHmm");
+    const start = now.format("HHmm");
+    const end = now.add(8, "hour").format("HHmm");
 
     await app.client.views.open({
       token: context.botToken,

@@ -12,8 +12,8 @@ app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
   try {
     const dailyReportsRef = firestore.collection("dailyReports");
 
-    const now = new Date();
-    const workDate = dayjs(now).format("YYYY/MM/DD");
+    const now = dayjs().add(9, "hour");
+    const workDate = now.format("YYYY/MM/DD");
     const payload = (view.state as any).values;
     const start = payload.start.start.value;
     const end = payload.end.end.value;
