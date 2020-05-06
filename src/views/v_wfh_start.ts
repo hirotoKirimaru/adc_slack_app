@@ -2,6 +2,7 @@ import { app } from "../initializers/bolt";
 import { FieldValue, firestore } from "../initializers/firebase";
 import { CallbackId } from "../types/constants";
 import dayjs from "dayjs";
+import { Status, DailyReport } from "../domain/dailyReport";
 
 // モーダルビューでのデータ送信イベントを処理します
 app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
@@ -21,12 +22,12 @@ app.view(CallbackId.WfhStart, async ({ ack, body, view, context }) => {
 
     const user = body["user"]["id"];
 
-    const report = {
+    const report: DailyReport = {
       user: user,
       workDate: workDate,
       start: start,
       end: end,
-      status: "open",
+      status: Status.Open,
       action: action,
       registerDate: timestamp,
       updateDate: timestamp,
