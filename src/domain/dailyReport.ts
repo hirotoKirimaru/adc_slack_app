@@ -27,16 +27,38 @@ export class DailyReportImpl implements DailyReport {
   registerDate: any;
   updateDate: any;
 
-  public workend(
+  public static workStart(
+    user: string,
+    workDate: string,
+    start: string,
+    end: string,
+    action: string,
+    timestamp: any
+  ) {
+    return {
+      user: user,
+      workDate: workDate,
+      start: start,
+      end: end,
+      status: Status.Open,
+      action: action,
+      registerDate: timestamp,
+      updateDate: timestamp,
+    };
+  }
+
+  public static workEnd(
     end: string,
     action: string,
     workingAction: string,
     timestamp: any
   ) {
-    this.end = end;
-    this.status = Status.Close;
-    this.action = action;
-    this.workingAction = workingAction;
-    this.updateDate = timestamp;
+    return {
+      end: end,
+      status: Status.Close,
+      action: action,
+      workingAction: workingAction,
+      updateDate: timestamp,
+    };
   }
 }

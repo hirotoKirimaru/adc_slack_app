@@ -36,9 +36,15 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
     dailyReports.docs.forEach((dailyReport) => {
       const dailyReportData: DailyReportImpl = dailyReport.data() as DailyReportImpl;
       workDate = dailyReportData.workDate;
-      dailyReportData.workend(end, action, workingAction, timestamp);
 
-      batch.update(dailyReport.ref, dailyReportData);
+      const workend = DailyReportImpl.workEnd(
+        end,
+        action,
+        workingAction,
+        timestamp
+      );
+
+      batch.update(dailyReport.ref, workend);
     });
 
     await batch.commit();
