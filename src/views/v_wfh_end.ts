@@ -1,6 +1,7 @@
 import { app } from "../initializers/bolt";
 import { FieldValue, firestore } from "../initializers/firebase";
 import { CallbackId } from "../types/constants";
+import { DailyReport } from "../domain/dailyReport";
 
 // モーダルビューでのデータ送信イベントを処理します
 app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
@@ -29,20 +30,20 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
         : "";
     const timestamp = await FieldValue.serverTimestamp();
 
-    const report = {
-      end: end,
-      status: "close",
-      action: action,
-      workingAction: workingAction,
-      updateDate: timestamp,
-    };
-
     const dailyReports = await dailyReportsQuery.get();
 
     let workDate = "";
     dailyReports.docs.forEach((dailyReport) => {
-      workDate = dailyReport.data().workDate;
-      batch.update(dailyReport.ref, report);
+      const dailyReportData: DailyReport = dailyReport.data() as DailyReport;
+      workDate = dailyReportData.workDate;
+
+      dailyReportData.end = end;
+      dailyReportData.status = "close";
+      dailyReportData.action = action;
+      dailyReportData.workingAction = workingAction;
+      dailyReportData.updateDate = timestamp;
+
+      batch.update(dailyReport.ref, dailyReportData);
     });
 
     await batch.commit();
