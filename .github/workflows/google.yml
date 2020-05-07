@@ -10,17 +10,18 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
 
-    steps:
+    steps:            
+      - name: Checkout
+        uses: actions/checkout@v1
+      
       - name: Overwrite env variables
         run: |
           echo "env_variables:" >> app.yaml
           echo "  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}" >> app.yaml
           echo "  SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}" >> app.yaml
+          
       - name: echo
         run: cat app.yaml
-            
-      - name: Checkout
-        uses: actions/checkout@v1
       
       - name: Build
         run: |
