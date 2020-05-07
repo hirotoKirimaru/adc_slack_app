@@ -16,6 +16,7 @@ jobs:
       
       - name: Build
         run: |
+          yarn
           yarn build
 
       # Setup and configure gcloud CLI
