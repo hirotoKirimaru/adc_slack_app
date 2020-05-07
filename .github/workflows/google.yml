@@ -25,9 +25,9 @@ jobs:
         yarn install
         NODE_ENV=production yarn run build
     - name: GAE deploy
-          run: |
-            echo 'github-actions@${{ secrets.GAE_PROJECT }}.iam.gserviceaccount.com' | gcloud auth activate-service-account --key-file ${{ secrets.GAE_KEY_FILE }}
-            gcloud app deploy app.yaml --project ${{ secrets.GAE_PROJECT }}
+      run: |
+        echo 'github-actions@${{ secrets.GAE_PROJECT }}.iam.gserviceaccount.com' | gcloud auth activate-service-account --key-file ${{ secrets.GAE_KEY_FILE }}
+        gcloud app deploy app.yaml --project ${{ secrets.GAE_PROJECT }}
 
-          env:
-            CI: true
+      env:
+        CI: true
