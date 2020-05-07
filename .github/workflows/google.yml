@@ -1,4 +1,18 @@
-name: Build and Deploy to GAE
+# Copyright 2020 Google, LLC.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Deploy to Google App Engine
 
 on:
   push:
@@ -6,28 +20,22 @@ on:
       - master
 
 jobs:
-  build:
-
+  setup-build-deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [10.16.0]
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Run tests with ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: yarn install, build
-      run: |
-        yarn install
-        NODE_ENV=production yarn run build
-    - name: GAE deploy
-      run: |
-        echo 'github-actions@${{ secrets.GAE_PROJECT }}.iam.gserviceaccount.com' | gcloud auth activate-service-account --key-file ${{ secrets.GAE_KEY_FILE }}
-        gcloud app deploy app.yaml --project ${{ secrets.GAE_PROJECT }}
+      - name: Checkout
+        uses: actions/checkout@v1
 
-      env:
-        CI: true
+      # Setup and configure gcloud CLI
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          project_id: ${{ secrets.GAE_PROJECT }}
+          service_account_key: ${{ secrets.GAE_KEY_FILE}}
+
+      # Deploy App to App Engine
+      - name: Deploy
+        run: |
+          gcloud app deploy
