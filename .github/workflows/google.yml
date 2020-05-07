@@ -1,0 +1,33 @@
+name: Build and Deploy to GAE
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.16.0]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run tests with ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: yarn install, build
+      run: |
+        yarn install
+        NODE_ENV=production yarn run build
+    - name: GAE deploy
+          run: |
+            echo 'github-actions@${{ secrets.GAE_PROJECT }}.iam.gserviceaccount.com' | gcloud auth activate-service-account --key-file ${{ secrets.GAE_KEY_FILE }}
+            gcloud app deploy app.yaml --project ${{ secrets.GAE_PROJECT }}
+
+          env:
+            CI: true
