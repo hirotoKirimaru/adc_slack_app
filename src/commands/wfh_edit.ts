@@ -1,8 +1,9 @@
 import { app } from "../initializers/bolt";
 import { CallbackId, Command } from "../types/constants";
 import { firestore } from "../initializers/firebase";
+import { DailyReport } from "../domain/dailyReport";
 
-app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
+app.command(Command.WfhEdit, async ({ context, body, ack, payload }) => {
   // コマンドリクエストを確認
   await ack();
 
@@ -28,7 +29,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
   }
 
   const dailyReport = dailyReports.docs[0];
-  const dailyReportData = dailyReport.data();
+  const dailyReportData = dailyReport.data() as DailyReport;
 
   try {
     await app.client.views.open({
@@ -39,7 +40,7 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
       view: {
         type: "modal",
         private_metadata: payload.channel_id,
-        callback_id: CallbackId.WfhEnd,
+        callback_id: CallbackId.WfhEdit,
         title: {
           type: "plain_text",
           text: "業務終了連絡",
@@ -50,32 +51,6 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
             text: {
               type: "mrkdwn",
               text: `作業日付：${dailyReportData.workDate}`,
-            },
-          },
-          {
-            type: "input",
-            block_id: "start",
-            label: {
-              type: "plain_text",
-              text: "開始時刻(実績)",
-            },
-            element: {
-              type: "plain_text_input",
-              action_id: "start",
-              initial_value: dailyReportData.start,
-            },
-          },
-          {
-            type: "input",
-            block_id: "end",
-            label: {
-              type: "plain_text",
-              text: "終了時刻(実績)",
-            },
-            element: {
-              type: "plain_text_input",
-              action_id: "end",
-              initial_value: dailyReportData.end,
             },
           },
           {

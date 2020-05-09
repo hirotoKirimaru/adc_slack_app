@@ -47,6 +47,18 @@ export class DailyReportImpl implements DailyReport {
     };
   }
 
+  public static workEdit(
+    action: string,
+    workingAction: string,
+    timestamp: any
+  ) {
+    return {
+      action: action,
+      workingAction: workingAction,
+      updateDate: timestamp,
+    };
+  }
+
   public static workEnd(
     end: string,
     action: string,
