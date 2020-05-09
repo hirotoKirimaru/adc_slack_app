@@ -42,7 +42,7 @@ app.command(Command.WfhStart, async ({ context, body, ack, payload }) => {
     }
 
     const start = now.format("HHmm");
-    const end = now.add(8, "hour").format("HHmm");
+    const end = now.add(9, "hour").format("HHmm");
 
     await app.client.views.open({
       token: context.botToken,
