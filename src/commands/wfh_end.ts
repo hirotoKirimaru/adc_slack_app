@@ -117,5 +117,12 @@ app.command(Command.WfhEnd, async ({ context, body, ack, payload }) => {
     });
   } catch (error) {
     console.error(error);
+    const msg = {
+      token: context.botToken,
+      text: error,
+      channel: payload.channel_id,
+      user: payload.user_id,
+    };
+    await app.client.chat.postEphemeral(msg as any);
   }
 });
