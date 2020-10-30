@@ -21,13 +21,13 @@ app.view(CallbackId.WfhEnd, async ({ ack, body, view, context }) => {
     const start = payload.start.start.value;
     const end = payload.end.end.value;
     const action =
-      payload.action.action.value !== undefined
-        ? payload.action.action.value
-        : "";
+      payload.action.action.value == null
+        ? ""
+        : payload.action.action.value;
     const workingAction =
-      payload.workingAction.workingAction.value !== undefined
-        ? payload.workingAction.workingAction.value
-        : "";
+      payload.workingAction.workingAction.value == null
+        ? ""
+        : payload.workingAction.workingAction.value;
     const timestamp = await FieldValue.serverTimestamp();
 
     const dailyReports = await dailyReportsQuery.get();
