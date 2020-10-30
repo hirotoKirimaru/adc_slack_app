@@ -79,7 +79,7 @@ app.command(Command.WfhEdit, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "workingAction",
-              initial_value: dailyReportData.workingAction,
+              initial_value: dailyReportData.workingAction ? dailyReportData.workingAction : "",
               multiline: true,
             },
           },
