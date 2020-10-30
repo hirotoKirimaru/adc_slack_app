@@ -64,7 +64,7 @@ app.command(Command.WfhEdit, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "action",
-              initial_value: dailyReportData.action,
+              initial_value: "aaaa",
               multiline: true,
             },
           },
@@ -79,7 +79,7 @@ app.command(Command.WfhEdit, async ({ context, body, ack, payload }) => {
             element: {
               type: "plain_text_input",
               action_id: "workingAction",
-              initial_value: dailyReportData.workingAction == null ? dailyReportData.workingAction : "",
+              initial_value: "bbb",
               multiline: true,
             },
           },
