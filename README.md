@@ -4,6 +4,7 @@
 # 環境
 - Bolt
 - typescript
+- Google Cloud Platform
 
 # その他
 なお、会社のSlackに導入してみた結果、401でエラーになってしまいました。  
@@ -22,3 +23,7 @@
 
 # やりたいこと
 - Slackへの投稿しかできないので、Google Hangoutに流したい。
+
+# デプロイ方法
+- masterへpush
+- 手動でGitHub Actionsを設定する
